@@ -41,6 +41,8 @@ public class Atom {
     * building of the orbitals
      */
     List<Electron> electronArray;
+    //Hashmap Quantum holds the Orbitals where the electrons are held. The key is the subshell and the elements are the Electrons
+    HashMap<String, List<Electron>> Quantum;
     //Radius Variable that holds the size of the atom. The distance from the nucleus to the valance shell
     double radius;
     /*
@@ -68,7 +70,9 @@ public class Atom {
     * correct properties
      */
     public Atom() {
-        setAtom(1);
+
+        setAtom(17);
+        setupOrbitals();
     }
 
     /*
@@ -136,7 +140,7 @@ public class Atom {
         * Determining the max amount of electrons in each subshell depends on the second character in the string
         * Keeping track of the energy level will determine which subshell comes next.
          */
-        HashMap<String, List<Electron>> Quantum = new HashMap<String, List<Electron>>();
+        Quantum = new HashMap<String, List<Electron>>();
 
         //Below are the subshells for the energy levels of the atom - Hard code the setup for the subshells
         //
@@ -155,7 +159,7 @@ public class Atom {
          */
         String currentSubshell = "1s";
         //The current shell variable helps to see which energy level comes after
-        int CurrentShell = 1;
+        int currentShell = 1;
         //This variable holds the value of the max amount of electrons that can go into the subshell
         int maxElectronsInSubShell;
 
@@ -164,7 +168,7 @@ public class Atom {
         * Checks which energy level and how many electrons are currently in the subshell. If all is good,
         * electron is placed in the arrayList and the next electron is ready to be placed
          */
-        for (int i = 0; i <= numberOfElectrons; i++) {
+        for (int i = 0; i < numberOfElectrons; i++) {
 
             //If statement checks to see if it is the s-subshell
             if (currentSubshell.contains("s") == true) {
@@ -199,18 +203,61 @@ public class Atom {
             * If the subshell is full then the subshell will be changed to the next level and the electron will
             * be placed in the new one.
              */
-            if (currentSubshell.contains("s") && Quantum.get(currentSubshell).size() <= 1) {
-                //BROKEN FIX PLEASE
-                //Quantum.put(currentSubshell, );
 
+            //this if statement checks to see if the subshell is s and max electrons are 2
+            if (currentSubshell.contains("s") && Quantum.get(currentSubshell).size() <= 1) {
+                //Adds a new Electron Object to the orbitals
+                Quantum.get(currentSubshell).add(new Electron());
             }
+            //this if statement checks to see if the subshell is p and max electrons are 6
+            else if (currentSubshell.contains("p") && Quantum.get(currentSubshell).size() <= 5) {
+                //Adds a new Electron Object to the orbitals
+                Quantum.get(currentSubshell).add(new Electron());
+            }
+            //this if statement checks to see if the subshell is d and max electrons are 10
+            else if (currentSubshell.contains("d") && Quantum.get(currentSubshell).size() <= 9) {
+                //Adds a new Electron Object to the orbitals
+                Quantum.get(currentSubshell).add(new Electron());
+            }
+            //this if statement checks to see if the subshell is f and max electrons are 14
+            else if (currentSubshell.contains("f") && Quantum.get(currentSubshell).size() <= 13) {
+                //Adds a new Electron Object to the orbitals
+                Quantum.get(currentSubshell).add(new Electron());
+            }
+
             //If the shell is full then the subshell will change to the next one and the electron will be placed in there
             else {
-
+                //Checks to see if it is the s subshell
+                if (currentSubshell.contains("s")) {
+                    //replaces the s subshell to the p subshell
+                    currentSubshell.replace("s", "p");
+                }
+                //Checks to see if it is the p subshell
+                else if (currentSubshell.contains("p")) {
+                    //replaces the p subshell to the d subshell
+                    currentSubshell.replace("p", "d");
+                }
+                //Checks to see if it is the d subshell
+                else if (currentSubshell.contains("d")) {
+                    //replaces the d subshell to the p subshell
+                    currentSubshell.replace("d", "f");
+                }
+                //checks to see if it is the f subshell
+                else if (currentSubshell.contains("f")) {
+                    //changes the shell number to the next level
+                    currentSubshell.replace(Integer.toString(currentShell), Integer.toString(currentShell + 1));
+                    //replaces the f subshell to the s subshell
+                    currentSubshell.replace("f", "s");
+                }
             }
 
         }
 
     }
 
+    public void returnOrbital() {
+
+        
+
+    }
 }
