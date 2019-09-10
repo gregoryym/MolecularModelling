@@ -2,6 +2,7 @@
 
 package MoleculeKit;
 
+import java.awt.desktop.SystemSleepEvent;
 import java.util.*;
 
 /*
@@ -71,7 +72,7 @@ public class Atom {
      */
     public Atom() {
 
-        setAtom(17);
+        setAtom(92);
         setupOrbitals();
     }
 
@@ -96,6 +97,11 @@ public class Atom {
             electronegativity = 1.8;
 
 
+        }
+
+        else if (atomicNumber == 92) {
+            this.atomicNumber = 92;
+            numberOfProtons = numberOfElectrons = atomicNumber;
         }
 
         else if (atomicNumber == 17) {
@@ -157,11 +163,11 @@ public class Atom {
         Keeps track of the current energy level for the 'for loop'. This variable helps to determine
         *how many electrons should go in the subshell and what subshell comes after
          */
-        String currentSubshell = "1s";
+        String currentSubshell = "s";
         //The current shell variable helps to see which energy level comes after
         int currentShell = 1;
         //This variable holds the value of the max amount of electrons that can go into the subshell
-        int maxElectronsInSubShell;
+        int maxElectronsInSubShell = 2;
 
         /*
         * For loop goes through the number of electrons to indiviually place them in a proper subshell.
@@ -170,94 +176,125 @@ public class Atom {
          */
         for (int i = 0; i < numberOfElectrons; i++) {
 
-            //If statement checks to see if it is the s-subshell
-            if (currentSubshell.contains("s") == true) {
-                maxElectronsInSubShell = 2;
-            }
-            //If statement checks to see if it is the p-subshell
-            else if (currentSubshell.contains("p")) {
-                maxElectronsInSubShell = 6;
-            }
-            //If statement checks to see if it is the d-subshell
-            else if (currentSubshell.contains("d")) {
-                maxElectronsInSubShell = 10;
-            }
-            //If statement checks to see if it is the f-subshell
-            else if (currentSubshell.contains("f")) {
-                maxElectronsInSubShell = 14;
-            }
-
             /*
             * Array list of electrons are initially set to null just to set up everything
             * This if statement checks to see if it is still in the initial state. If so then a new
             * Array list is placed in the quantum hashmap
             */
-            if (Quantum.get(currentSubshell) == null) {
+            if (Quantum.get(Integer.toString(currentShell) + currentSubshell) == null) {
                 //adds a arraylist inside the hashmap quantum
-               Quantum.put(currentSubshell, new ArrayList<Electron>());
+               Quantum.put(Integer.toString(currentShell) + currentSubshell, new ArrayList<Electron>());
+            }
+
+            //Adds a new electron to the given energy level and subshell
+            Quantum.get(Integer.toString(currentShell) + currentSubshell).add(new Electron());
+
+            //The if statements below check to see if the orbital is filled with the max number of electrons
+
+            //This if statement checks to see if the s orbital
+            if (currentSubshell.contains("s")) {
+
+                //checks to see the shell number and if the orbital is filled with the max number of electrons
+                if (currentShell == 1 && Quantum.get(Integer.toString(currentShell) + currentSubshell).size() == maxElectronsInSubShell) {
+                    //if the number of electrons are maxed then it moves to the next energy level
+                    currentShell ++;
+                }
+
+                //If the energy level is 2 or 3 then s will go to the p orbital. Checks to see if the orbital is maxed
+                else if (currentShell >= 2 && currentShell <= 3 && Quantum.get(Integer.toString(currentShell) + currentSubshell).size() == maxElectronsInSubShell) {
+                    //replaces the s orbital to the p orbital. Changes the string
+                    currentSubshell = currentSubshell.replace("s", "p");
+                    //changes the max amount of electrons that can be stored. P can hold 6 electrons
+                    maxElectronsInSubShell = 6;
+                }
+
+                //If the energy level is 4 or 5 then s will go the d orbital. Checks to see if the orbital is maxed
+                else if (currentShell >= 4 && currentShell <= 5 && Quantum.get(Integer.toString(currentShell) + currentSubshell).size() == maxElectronsInSubShell) {
+                    //changes the s orbital to the d orbital. Changes the string
+                    currentSubshell = currentSubshell.replace("s", "d");
+                    //the d orbital is one energy level lower so the current shell is subtracted by one
+                    currentShell --;
+                    //the d orbital can hold 10 electrons so the max number of electrons are changed
+                    maxElectronsInSubShell = 10;
+                }
+
+                //if the energy level is 6 or 7 then s will go the f orbital. Checks to see if the orbital is maxed
+                else if (currentShell >= 6 && currentShell <= 7 && (Quantum.get(Integer.toString(currentShell) + currentSubshell).size() == maxElectronsInSubShell)) {
+                    //changes the s orbital to the f orbital. Changes the string
+                    currentSubshell = currentSubshell.replace("s", "f");
+                    //The f orbital is 2 energy levels below than the current shell so current shell is subtracted by 2
+                    currentShell = currentShell - 2;
+                    //the f orbital can hold 14 electrons
+                    maxElectronsInSubShell = 14;
+                }
             }
 
             /*
-            * This if statement checks to see if the current subshell is full {max amount depends on the shell}
-            * If the energy shell is not full, then an electron will be placed inside the subshell
-            * If the subshell is full then the subshell will be changed to the next level and the electron will
-            * be placed in the new one.
+             * Array list of electrons are initially set to null just to set up everything
+             * This if statement checks to see if it is still in the initial state. If so then a new
+             * Array list is placed in the quantum hashmap
              */
-
-            //this if statement checks to see if the subshell is s and max electrons are 2
-            if (currentSubshell.contains("s") && Quantum.get(currentSubshell).size() <= 1) {
-                //Adds a new Electron Object to the orbitals
-                Quantum.get(currentSubshell).add(new Electron());
-            }
-            //this if statement checks to see if the subshell is p and max electrons are 6
-            else if (currentSubshell.contains("p") && Quantum.get(currentSubshell).size() <= 5) {
-                //Adds a new Electron Object to the orbitals
-                Quantum.get(currentSubshell).add(new Electron());
-            }
-            //this if statement checks to see if the subshell is d and max electrons are 10
-            else if (currentSubshell.contains("d") && Quantum.get(currentSubshell).size() <= 9) {
-                //Adds a new Electron Object to the orbitals
-                Quantum.get(currentSubshell).add(new Electron());
-            }
-            //this if statement checks to see if the subshell is f and max electrons are 14
-            else if (currentSubshell.contains("f") && Quantum.get(currentSubshell).size() <= 13) {
-                //Adds a new Electron Object to the orbitals
-                Quantum.get(currentSubshell).add(new Electron());
+            if (Quantum.get(Integer.toString(currentShell) + currentSubshell) == null) {
+                //adds a arraylist inside the hashmap quantum
+                Quantum.put(Integer.toString(currentShell) + currentSubshell, new ArrayList<Electron>());
             }
 
-            //If the shell is full then the subshell will change to the next one and the electron will be placed in there
-            else {
-                //Checks to see if it is the s subshell
-                if (currentSubshell.contains("s")) {
-                    //replaces the s subshell to the p subshell
-                    currentSubshell.replace("s", "p");
-                }
-                //Checks to see if it is the p subshell
-                else if (currentSubshell.contains("p")) {
-                    //replaces the p subshell to the d subshell
-                    currentSubshell.replace("p", "d");
-                }
-                //Checks to see if it is the d subshell
-                else if (currentSubshell.contains("d")) {
-                    //replaces the d subshell to the p subshell
-                    currentSubshell.replace("d", "f");
-                }
-                //checks to see if it is the f subshell
-                else if (currentSubshell.contains("f")) {
-                    //changes the shell number to the next level
-                    currentSubshell.replace(Integer.toString(currentShell), Integer.toString(currentShell + 1));
-                    //replaces the f subshell to the s subshell
-                    currentSubshell.replace("f", "s");
+            //Checks to see if the orbital is already in the p
+            if (currentSubshell.contains("p")) {
+
+                //Checks to see if the orbital is maxed
+                if (Quantum.get(Integer.toString(currentShell) + currentSubshell).size() == maxElectronsInSubShell) {
+                    //If maxed then the program moves to the next energy level
+                    currentShell ++;
+                    //The p orbital goes to the s orbital. Changes the string
+                    currentSubshell = currentSubshell.replace("p", "s");
+                    //The s orbital can only hold 2 electrons
+                    maxElectronsInSubShell = 2;
                 }
             }
 
+            //Checks to see if the orbital is already in the d
+            if (currentSubshell.contains("d")) {
+
+                //Checks to see if the orbital is maxed
+                if (Quantum.get(Integer.toString(currentShell) + currentSubshell).size() == maxElectronsInSubShell) {
+                    //If maxed then the program moves to the p orbital which is one energy level higher
+                    currentShell ++;
+                    //D moves to the P. String is replaced
+                    currentSubshell = currentSubshell.replace("d", "p");
+                    //The p orbital can hold 6 electrons
+                    maxElectronsInSubShell = 6;
+                }
+            }
+
+            //Checks to see if the orbital is already in the f
+            if (currentSubshell.contains("f")) {
+
+                //Checks to see if the orbital is maxed
+                if (Quantum.get(Integer.toString(currentShell) + currentSubshell).size() == maxElectronsInSubShell) {
+                    //If maxed then the f orbital moves to the d orbital which is 1 energy levels above
+                    currentShell++;
+                    //f orbital changes to the d orbital
+                    currentSubshell = currentSubshell.replace("f", "d");
+                    //the d orbital can hold 10 electrons
+                    maxElectronsInSubShell = 10;
+                }
+            }
         }
 
     }
 
+    //Function that prints out the electron configuration to the console
     public void returnOrbital() {
 
-        
+        //CHecks to see if their are electrons in the orbital and if there are it prints the amount of electrons in the given orbital
+        if (Quantum.get("1s") != null) { System.out.println("{1s: " + Quantum.get("1s").size() + "} "); }
+        if (Quantum.get("2s") != null) { System.out.print("{2s: " + Quantum.get("2s").size() + "} "); } if (Quantum.get("2p") != null) { System.out.println("{2p: " + Quantum.get("2p").size() + "} "); }
+        if (Quantum.get("3s") != null) { System.out.print("{3s: " + Quantum.get("3s").size() + "} "); } if (Quantum.get("3p") != null) { System.out.println("{3p: " + Quantum.get("3p").size() + "} "); }
+        if (Quantum.get("4s") != null) { System.out.print("{4s: " + Quantum.get("4s").size() + "} "); } if (Quantum.get("3d") != null) { System.out.print("{3d: " + Quantum.get("3d").size() + "} "); } if (Quantum.get("4p") != null) { System.out.println("{4p: " + Quantum.get("4p").size() + "} "); }
+        if (Quantum.get("5s") != null) { System.out.print("{5s: " + Quantum.get("5s").size() + "} "); } if (Quantum.get("4d") != null) { System.out.print("{4d: " + Quantum.get("4d").size() + "} "); } if (Quantum.get("5p") != null) { System.out.println("{5p: " + Quantum.get("5p").size() + "} "); }
+        if (Quantum.get("6s") != null) { System.out.print("{6s: " + Quantum.get("6s").size() + "} "); } if (Quantum.get("4f") != null) { System.out.print("{4f: " + Quantum.get("4f").size() + "} "); } if (Quantum.get("5d") != null) { System.out.print("{5d: " + Quantum.get("5d").size() + "} "); } if (Quantum.get("6p") != null) { System.out.println("{6p: " + Quantum.get("6p").size() + "} "); }
+        if (Quantum.get("7s") != null) { System.out.print("{7s: " + Quantum.get("7s").size() + "} "); } if (Quantum.get("5f") != null) { System.out.print("{5f: " + Quantum.get("5f").size() + "} "); } if (Quantum.get("6d") != null) { System.out.print("{6d: " + Quantum.get("6d").size() + "} "); } if (Quantum.get("7p") != null) { System.out.println("{7p: " + Quantum.get("7p").size() + "} "); }
 
     }
 }
