@@ -2,7 +2,14 @@
 
 package MoleculeKit;
 
-import java.awt.desktop.SystemSleepEvent;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 /*
@@ -117,6 +124,8 @@ public class Atom {
             electronegativity = 3.2;
 
         }
+
+
     }
 
     //This function sets up the each electron in the orbitals of the atom
