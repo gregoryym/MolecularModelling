@@ -1,15 +1,7 @@
 //Started September 4th, 2019
 
 package MoleculeKit;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+;
 import java.util.*;
 
 /*
@@ -20,21 +12,17 @@ import java.util.*;
 *
 */
 
-public class Atom {
+public class Atom extends Nucleus {
 
     /*
-    * Most important variable of the Atom. Gives the amount of protons in the atom
-    * which gives all the properties. Most of the other variables depends on this one variable
-    */
+     * the  electronArray holds Electron objects in one container to be accessed during the
+     * building of the orbitals hey jason FUCK off
+     */
+    List<Electron> electronArray;
 
-    int atomicNumber;
-    /*
-    * Both variables holds the mass of the atom. The difference is in the units.
-    * The atomicWeight variable holds the value with the units of AMU
-    * The mass variable holds the value with the units of KG
-    * The mass variable depends on the atomicWeight variable and a conversion factor
-    */
-    double atomicWeight, mass;
+    //Hashmap Quantum holds the Orbitals where the electrons are held. The key is the subshell and the elements are the Electrons
+    HashMap<String, List<Electron>> Quantum;
+
     /*
     * The charge variable holds the charge of the atom. The default charge of an atom
     * is zero unless specifically changed. A charged atom has unequal protons to electrons
@@ -42,32 +30,15 @@ public class Atom {
     * change after bonding. The atom can start off neutral and end up charged after bonding.
     */
     int charge = 0;
-    //These three variables holds the amount of subatomic particles that are in the atom
-    int numberOfProtons, numberOfElectrons, numberOfNeutrons;
-    /*
-    * the  electronArray holds Electron objects in one container to be accessed during the
-    * building of the orbitals
-     */
-    List<Electron> electronArray;
-    //Hashmap Quantum holds the Orbitals where the electrons are held. The key is the subshell and the elements are the Electrons
-    HashMap<String, List<Electron>> Quantum;
-    //Radius Variable that holds the size of the atom. The distance from the nucleus to the valance shell
-    double radius;
-    /*
-    * electronegativity variable holds the double value of the electronegativity. The number
-    * tells how likely the atom will attract other electrons when bonded to other atoms
-    */
-    double electronegativity;
+
+    //The number of Electrons variable holds the count of the electrons in the atom
+    int numberOfElectrons;
+
     /*
     * The energyLevels variable holds the value of how many energy levels are in the atom. Each energy level
     * corresponds to a shell. The last energy level is the valance shell which will be the most important level
      */
     int energyLevels;
-    /*
-    * The Name variable holds the name of the element and the symbol will hold the atomic symbol
-    * for the given element
-    */
-    String symbol, name;
 
     //Sets the x, y, z position in 3 dimensional space - variables will be used in later versions
     int x, y, z;
@@ -77,75 +48,27 @@ public class Atom {
     * This function will run all the initial calculations and functions needed for the atom to have the
     * correct properties
      */
-    public Atom() {
+    public Atom(int AtomicNumber) {
 
-        setAtom(92);
+        //Calls the Nucleus class
+        super(AtomicNumber);
+        numberOfElectrons = numberOfProtons;
+        //Sets up the orbitals where the electrons will be housed
         setupOrbitals();
+
+
     }
 
-    /*
-    * Tester Function until JSON file is created
-    * This function is to set up a basic atom for testing the program
-    * Once the JSON file is created the setAtom function will load the JSON file
-    * The JSON file will contain all the information for all the atoms so the user can have access to all of them
-    */
-    public void setAtom(int atomicNumber) {
+    public void setCharge(int charge) {
 
-        if (atomicNumber == 1) {
-
-            this.atomicNumber = 1;
-            atomicWeight = 1.008;
-            mass = atomicWeight * 1.66e-27;
-            charge = 0;
-            numberOfProtons = numberOfElectrons = atomicNumber;
-            radius = 53 * 1e-12;
-            symbol = "H";
-            name = "Hydrogen";
-            electronegativity = 1.8;
-
-
-        }
-
-        else if (atomicNumber == 92) {
-            this.atomicNumber = 92;
-            numberOfProtons = numberOfElectrons = atomicNumber;
-        }
-
-        else if (atomicNumber == 17) {
-
-            this.atomicNumber = 17;
-            atomicWeight = 35.45;
-            mass = atomicWeight * 1.66e-27;
-            charge = 0;
-            numberOfProtons = numberOfElectrons = atomicNumber;
-            radius = 175 * 1e-12;
-            symbol = "Cl";
-            name = "Chlorine";
-            electronegativity = 3.2;
-
-        }
-
+        this.charge = charge;
+        numberOfElectrons = numberOfElectrons - charge;
+        setupOrbitals();
 
     }
 
     //This function sets up the each electron in the orbitals of the atom
     private void setupOrbitals() {
-
-        /*
-        * Establishes the array with the max number of the array being the amount of electrons that are given
-        * in the beginning of the program
-        */
-        electronArray = new ArrayList<Electron>();
-
-        //Iterates through the amount of electrons to place an electron object in the array of electrons
-        for (int i = 0; i <= numberOfElectrons; i++) {
-
-            /* Puts an electron object in the given index in the electron Array
-            *  The electron array holds all of the electron objects
-            */
-            electronArray.add(new Electron());
-
-        }
 
         /*
         * The Hashmap of Quantum simulates the subshells of an atom.
@@ -178,6 +101,10 @@ public class Atom {
         //This variable holds the value of the max amount of electrons that can go into the subshell
         int maxElectronsInSubShell = 2;
 
+        int j = 0;
+        int spin = +1;
+        int[] mArray = new int[]{0};
+
         /*
         * For loop goes through the number of electrons to indiviually place them in a proper subshell.
         * Checks which energy level and how many electrons are currently in the subshell. If all is good,
@@ -196,7 +123,7 @@ public class Atom {
             }
 
             //Adds a new electron to the given energy level and subshell
-            Quantum.get(Integer.toString(currentShell) + currentSubshell).add(new Electron());
+            Quantum.get(Integer.toString(currentShell) + currentSubshell).add(new Electron(currentShell, currentSubshell));
 
             //The if statements below check to see if the orbital is filled with the max number of electrons
 
@@ -289,14 +216,48 @@ public class Atom {
                     maxElectronsInSubShell = 10;
                 }
             }
+
+            //System.out.println(maxElectronsInSubShell);
+            /*
+            if (maxElectronsInSubShell == 2) { mArray = new int[]{0}; }
+            else if (maxElectronsInSubShell == 6) { mArray = new int[]{-1, 0, 1}; }
+            else if (maxElectronsInSubShell == 10) { mArray = new int[]{-2, -1, 0, 1, 2}; }
+            else if (maxElectronsInSubShell == 14) { mArray = new int[]{-3, -2, -1, 0, 1, 2, 3}; }
+            */
+
+
+            if (j == (maxElectronsInSubShell/2) - 1) {
+                j = 0;
+                spin *= -1;
+            }
+
+            //System.out.print(currentShell);
+            //System.out.println(currentSubshell);
+
+            //System.out.println(j);
+           // Quantum.get(currentShell + currentSubshell).get(i).m = mArray[j];
+            //Quantum.get(currentShell + currentSubshell).get(i).s = spin;
+
+            //j++;
+
         }
+
+        energyLevels = currentShell - 1;
+
+    }
+
+    private void takeElectronFromOrbital(int AmountOfElectronsTaken) {
+
+        int valanceShell = energyLevels;
+
+
 
     }
 
     //Function that prints out the electron configuration to the console
     public void returnOrbital() {
 
-        //CHecks to see if their are electrons in the orbital and if there are it prints the amount of electrons in the given orbital
+        //Checks to see if their are electrons in the orbital and if there are it prints the amount of electrons in the given orbital
         if (Quantum.get("1s") != null) { System.out.println("{1s: " + Quantum.get("1s").size() + "} "); }
         if (Quantum.get("2s") != null) { System.out.print("{2s: " + Quantum.get("2s").size() + "} "); } if (Quantum.get("2p") != null) { System.out.println("{2p: " + Quantum.get("2p").size() + "} "); }
         if (Quantum.get("3s") != null) { System.out.print("{3s: " + Quantum.get("3s").size() + "} "); } if (Quantum.get("3p") != null) { System.out.println("{3p: " + Quantum.get("3p").size() + "} "); }
@@ -305,5 +266,21 @@ public class Atom {
         if (Quantum.get("6s") != null) { System.out.print("{6s: " + Quantum.get("6s").size() + "} "); } if (Quantum.get("4f") != null) { System.out.print("{4f: " + Quantum.get("4f").size() + "} "); } if (Quantum.get("5d") != null) { System.out.print("{5d: " + Quantum.get("5d").size() + "} "); } if (Quantum.get("6p") != null) { System.out.println("{6p: " + Quantum.get("6p").size() + "} "); }
         if (Quantum.get("7s") != null) { System.out.print("{7s: " + Quantum.get("7s").size() + "} "); } if (Quantum.get("5f") != null) { System.out.print("{5f: " + Quantum.get("5f").size() + "} "); } if (Quantum.get("6d") != null) { System.out.print("{6d: " + Quantum.get("6d").size() + "} "); } if (Quantum.get("7p") != null) { System.out.println("{7p: " + Quantum.get("7p").size() + "} "); }
 
+    }
+
+    public void returnStats() {
+        System.out.println("Name: " + name);
+        System.out.println("Symbol: " + symbol);
+        System.out.println("Atomic Number: " + AtomicNumber);
+        System.out.println("Atomic Weight: " + AtomicWeight + " amu");
+        System.out.println("Atomic Radius: " + radius + " pm");
+        System.out.println("Electronegativity: " + electronegativity);
+        System.out.println("First Ionization Energy: " + firstIonizationEnergy + " kJ/mol");
+        System.out.print("Oxidation States: [");
+        for (int i = 0; i < oxidationStates.length; i++) {
+            if (i == oxidationStates.length - 1) { System.out.print(oxidationStates[i]); }
+            else { System.out.print(oxidationStates[i] + ", "); }
+        }
+        System.out.print("]\n");
     }
 }
