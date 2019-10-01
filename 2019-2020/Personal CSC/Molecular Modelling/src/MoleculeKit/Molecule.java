@@ -7,13 +7,20 @@ public class Molecule {
 
     ArrayList<Atom> atoms;
 
-    public void getMolecule(String molecule) {
+    //This method dissect the input molecule and creates individual atoms
+    public void dissectMolecule(String molecule) {
 
+        //Variable that holds the string of the dissected element
         String element = "";
+        //Variable that holds the number of moles
         String moles = "";
+        //Variable that holds the number of atoms of the dissected element
+        String atomCount = "";
+        //
         int index = molecule.length();
         atoms = new ArrayList<Atom>();
 
+        //This for loop goes through each character in the string molecule
         for (int i = 0; i < index; i++) {
             //This if statement checks the first index in the string of molecule
             if (i == 0) {
@@ -46,14 +53,23 @@ public class Molecule {
             //this if statement checks to see if the character is a number and not at index 0. If the number is not at index 0 then it shows how many of that
             //element is present in the formula
             else if (Character.isDigit(molecule.charAt(i)) && i != 0) {
-                //This for loop converts that number to a type integer and index k loops until it reaches that index.
-                for (int k = 1; k < Integer.parseInt(String.valueOf(molecule.charAt(i))); k ++) {
-                    //adds the previous element k times
-                    atoms.add(new Atom(findAtomicNumber(String.valueOf(molecule.charAt(i - 1)))));
+                //The number is stored in a variable to keep track of the number of atoms
+                atomCount = String.valueOf(molecule.charAt(i));
+                //this if statement checks to see if the index is in the bounds
+                if (i + 1 < index) {
+                    //if the if statement is in the bounds then the two numbers will be concatenated together to make one number
+                    if (Character.isDigit(molecule.charAt(i + 1))) { atomCount = atomCount + molecule.charAt(i + 1); }
                 }
+                System.out.println(atomCount);
+                //This for loop converts that number to a type integer and index k loops until it reaches that index.
+                for (int k = 0; k < Integer.parseInt(atomCount); k ++) {
+                    //adds the previous element k times
+                    atoms.add(new Atom(findAtomicNumber(element)));
+                }
+                i++;
             }
             //This if statement checks to see if the index is the last index. If it is then the last element that was concatenated will be added to the list of atoms
-            if (i == index - 1) { atoms.add(new Atom(findAtomicNumber(element)));}
+            if (i == index - 1 && !Character.isDigit(molecule.charAt(i))) { atoms.add(new Atom(findAtomicNumber(element)));}
         }
 
 
@@ -77,5 +93,14 @@ public class Molecule {
         else if(atomicSymbol.contentEquals("Ne")) { atomicNumber = 10; }
 
         return atomicNumber;
+    }
+
+    //This method prints out the atoms in the molecule
+    public void getAtoms() {
+        //this for loop goes through the array list of atoms
+        for (int i = 0; i < atoms.size(); i++) {
+            //Prints out the individual atoms in the array list
+            System.out.println(i + 1 + ": " + atoms.get(i).name);
+        }
     }
 }
