@@ -255,7 +255,7 @@ public class Nucleus {
             oxidationStates = new int[]{0};
         }
         //Potassium
-        if (AtomicNumber == 19) {
+        else if (AtomicNumber == 19) {
             this.AtomicNumber = AtomicNumber;
             symbol = "K";
             name = "Potassium";
@@ -362,20 +362,6 @@ public class Nucleus {
             firstIonizationEnergy = 760;
             oxidationStates = new int[]{2, 3};
         }
-        /*
-        else {
-            System.out.println("Atomic Number is not listed yet...");
-            this.AtomicNumber = 0;
-            symbol = "";
-            name = "";
-            AtomicWeight = 0;
-            numberOfProtons = AtomicNumber;
-            radius = 0;
-            electronegativity = 0;
-            firstIonizationEnergy = 0;
-            oxidationStates = new int[]{0};
-        }
-         */
 
         //Nickel
         else if (AtomicNumber == 28) {
@@ -485,7 +471,9 @@ public class Nucleus {
             firstIonizationEnergy = 1351;
             oxidationStates = new int[]{0, 2};
         }
-        
+
+
+
         mass = AtomicWeight * 1.66e-27;
 
     }
