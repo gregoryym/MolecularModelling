@@ -5,7 +5,6 @@ package MoleculeKit;
 import java.util.*;
 
 /*
-//TEST
 *   The Atom class simulates an atom. The Atom class calls for a given atomic Number
 *   (number of protons) and from there the computer will fill in the other properties associated
 *   with the given atomic number. Properties of atoms are held/can be found in the given variables
