@@ -16,7 +16,7 @@ public class Atom extends Nucleus {
 
     /*
      * the  electronArray holds Electron objects in one container to be accessed during the
-     * building of the orbitals hey jason FUCK off
+     * building of the orbitals hey
      */
     List<Electron> electronArray;
 
