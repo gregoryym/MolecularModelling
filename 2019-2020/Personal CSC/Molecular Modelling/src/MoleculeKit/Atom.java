@@ -1,7 +1,6 @@
 //Started September 4th, 2019
 
 package MoleculeKit;
-;
 import java.util.*;
 
 /*
@@ -16,7 +15,7 @@ public class Atom extends Nucleus {
 
     /*
      * the  electronArray holds Electron objects in one container to be accessed during the
-     * building of the orbitals hey
+     * building of the orbitals
      */
     List<Electron> electronArray;
 
@@ -48,13 +47,18 @@ public class Atom extends Nucleus {
     * This function will run all the initial calculations and functions needed for the atom to have the
     * correct properties
      */
-    public Atom(int AtomicNumber) {
+    public Atom(int AtomicNumber, int x, int y, int z) {
 
         //Calls the Nucleus class
         super(AtomicNumber);
         numberOfElectrons = numberOfProtons;
         //Sets up the orbitals where the electrons will be housed
         setupOrbitals();
+
+        Random ran = new Random();
+        this.x = ran.nextInt(500);
+        this.y = ran.nextInt(500);
+        this.z = ran.nextInt(500);
 
 
     }
@@ -268,7 +272,8 @@ public class Atom extends Nucleus {
 
     }
 
-    public void returnStats() {
+    //Method that returns the properties for that given atom
+    public String[] returnProperties() {
         System.out.println("Name: " + name);
         System.out.println("Symbol: " + symbol);
         System.out.println("Atomic Number: " + AtomicNumber);
@@ -282,5 +287,22 @@ public class Atom extends Nucleus {
             else { System.out.print(oxidationStates[i] + ", "); }
         }
         System.out.print("]\n");
+
+        //String array that holds the properties of the atom
+        String [] properties = new String[]{
+
+                "Element: " + name,
+                "Atomic Symbol: " + symbol,
+                "Atomic Number: " + String.valueOf(AtomicNumber),
+                "Atomic Weight: " + String.valueOf(AtomicWeight) + "amu",
+                "Mass: " + mass + "kg",
+                "Atomic Radius: " + String.valueOf(radius) + "pm",
+                "Electronegativity: " + String.valueOf(electronegativity),
+                "First Ionziation Energy: " + String.valueOf(firstIonizationEnergy) + "kJ/mol",
+
+        };
+
+        return properties;
+
     }
 }

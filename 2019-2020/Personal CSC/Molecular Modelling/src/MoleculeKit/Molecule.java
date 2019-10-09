@@ -2,14 +2,23 @@ package MoleculeKit;
 
 import java.lang.Character;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Molecule {
 
     ArrayList<Atom> atoms;
     String[] atomNames;
+    HashMap<Atom, List<Atom>> molecule;
 
-    public Molecule(String molecule) {
-        dissectMolecule(molecule);
+    public Molecule(String moleculeString) {
+
+        dissectMolecule(moleculeString);
+
+        molecule = new HashMap<Atom, List<Atom>>();
+        for (Atom atom : atoms) {
+            molecule.put(atom, null);
+        }
     }
 
     //This method dissect the input molecule and creates individual atoms
@@ -45,9 +54,9 @@ public class Molecule {
             //This if statement checks to see if the character at index i is a capital letter
             if (Character.isUpperCase(molecule.charAt(i)) && i != 0) {
                 //This if statement checks to see if the previous string was a number
-                if (Character.isDigit(molecule.charAt(i - 1)) == false) {
+                if (!Character.isDigit(molecule.charAt(i - 1))) {
                     //If the previous string was not a number than the previous string will become a new atom and will be added to the list of atoms
-                    atoms.add(new Atom(findAtomicNumber(element)));
+                    atoms.add(new Atom(findAtomicNumber(element), 0, 0, 0));
                 }
                 //the previous string gets overwritten with the start of the new element - Capital letter is the start of a new element
                 element = String.valueOf(molecule.charAt(i));
@@ -63,19 +72,17 @@ public class Molecule {
                 //this if statement checks to see if the index is in the bounds
                 if (i + 1 < index) {
                     //if the if statement is in the bounds then the two numbers will be concatenated together to make one number and moves onto the next index
-                    if (Character.isDigit(molecule.charAt(i + 1))) { atomCount = atomCount + molecule.charAt(i + 1); i++;}
+                    if (Character.isDigit(molecule.charAt(i + 1))) { atomCount = atomCount + molecule.charAt(i + 1); i++; }
                 }
                 //This for loop converts that number to a type integer and index k loops until it reaches that index.
                 for (int k = 0; k < Integer.parseInt(atomCount); k ++) {
                     //adds the previous element k times
-                    atoms.add(new Atom(findAtomicNumber(element)));
+                    atoms.add(new Atom(findAtomicNumber(element), 0, 0, 0));
                 }
             }
             //This if statement checks to see if the index is the last index. If it is then the last element that was concatenated will be added to the list of atoms
-            if (i == index - 1 && !Character.isDigit(molecule.charAt(i))) { atoms.add(new Atom(findAtomicNumber(element)));}
+            if (i == index - 1 && !Character.isDigit(molecule.charAt(i))) { atoms.add(new Atom(findAtomicNumber(element), 0, 0, 0));}
         }
-
-
 
     }
 
@@ -226,4 +233,13 @@ public class Molecule {
         //returns all of the atom names
         return atomNames;
     }
+
+    public void bond(Atom Atom1, Atom Atom2) {
+
+        molecule.get(Atom1).add(Atom2);
+
+    }
+
+
+
 }

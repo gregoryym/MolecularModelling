@@ -1,5 +1,7 @@
 package MoleculeKit;
 
+import java.util.Random;
+
 public class Nucleus {
 
     /*
@@ -34,9 +36,14 @@ public class Nucleus {
     //Oxidation states are how many electrons will be lost or given
     int[] oxidationStates;
 
+    //Array that holds the RGB value of an atom
+    int[] RGB;
+
 
 
     public Nucleus(int AtomicNumber) {
+
+        RGB = new int[]{255, 0, 0};
 
         //Hydrogen
         if (AtomicNumber == 1) {
@@ -49,6 +56,7 @@ public class Nucleus {
             electronegativity = 2.2;
             firstIonizationEnergy = 1312;
             oxidationStates = new int[]{-1, 1};
+            RGB = new int[]{255, 0, 0};
         }
         //Helium
         else if (AtomicNumber == 2) {
