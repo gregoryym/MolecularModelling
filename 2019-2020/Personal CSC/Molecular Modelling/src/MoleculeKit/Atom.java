@@ -13,12 +13,6 @@ import java.util.*;
 
 public class Atom extends Nucleus {
 
-    /*
-     * the  electronArray holds Electron objects in one container to be accessed during the
-     * building of the orbitals
-     */
-    List<Electron> electronArray;
-
     //Hashmap Quantum holds the Orbitals where the electrons are held. The key is the subshell and the elements are the Electrons
     HashMap<String, List<Electron>> Quantum;
 
@@ -31,7 +25,7 @@ public class Atom extends Nucleus {
     int charge = 0;
 
     //The number of Electrons variable holds the count of the electrons in the atom
-    int numberOfElectrons;
+    private int numberOfElectrons;
 
     /*
     * The energyLevels variable holds the value of how many energy levels are in the atom. Each energy level
@@ -63,10 +57,9 @@ public class Atom extends Nucleus {
 
     }
 
-    public void setCharge(int charge) {
+    public void setCharge() {
 
-        this.charge = charge;
-        numberOfElectrons = numberOfElectrons - charge;
+        charge = numberOfProtons - numberOfElectrons;
         setupOrbitals();
 
     }
@@ -82,7 +75,7 @@ public class Atom extends Nucleus {
         * Determining the max amount of electrons in each subshell depends on the second character in the string
         * Keeping track of the energy level will determine which subshell comes next.
          */
-        Quantum = new HashMap<String, List<Electron>>();
+        Quantum = new HashMap<>();
 
         //Below are the subshells for the energy levels of the atom - Hard code the setup for the subshells
         //
@@ -176,7 +169,7 @@ public class Atom extends Nucleus {
              */
             if (Quantum.get(Integer.toString(currentShell) + currentSubshell) == null) {
                 //adds a arraylist inside the hashmap quantum
-                Quantum.put(Integer.toString(currentShell) + currentSubshell, new ArrayList<Electron>());
+                Quantum.put(Integer.toString(currentShell) + currentSubshell, new ArrayList<>());
             }
 
             //Checks to see if the orbital is already in the p
@@ -211,7 +204,7 @@ public class Atom extends Nucleus {
             if (currentSubshell.contains("f")) {
 
                 //Checks to see if the orbital is maxed
-                if (Quantum.get(Integer.toString(currentShell) + currentSubshell).size() == maxElectronsInSubShell) {
+                if (Quantum.get(currentShell + currentSubshell).size() == maxElectronsInSubShell) {
                     //If maxed then the f orbital moves to the d orbital which is 1 energy levels above
                     currentShell++;
                     //f orbital changes to the d orbital
@@ -221,40 +214,10 @@ public class Atom extends Nucleus {
                 }
             }
 
-            //System.out.println(maxElectronsInSubShell);
-            /*
-            if (maxElectronsInSubShell == 2) { mArray = new int[]{0}; }
-            else if (maxElectronsInSubShell == 6) { mArray = new int[]{-1, 0, 1}; }
-            else if (maxElectronsInSubShell == 10) { mArray = new int[]{-2, -1, 0, 1, 2}; }
-            else if (maxElectronsInSubShell == 14) { mArray = new int[]{-3, -2, -1, 0, 1, 2, 3}; }
-            */
-
-
-            if (j == (maxElectronsInSubShell/2) - 1) {
-                j = 0;
-                spin *= -1;
-            }
-
-            //System.out.print(currentShell);
-            //System.out.println(currentSubshell);
-
-            //System.out.println(j);
-           // Quantum.get(currentShell + currentSubshell).get(i).m = mArray[j];
-            //Quantum.get(currentShell + currentSubshell).get(i).s = spin;
-
-            //j++;
-
         }
 
-        energyLevels = currentShell - 1;
-
-    }
-
-    private void takeElectronFromOrbital(int AmountOfElectronsTaken) {
-
-        int valanceShell = energyLevels;
-
-
+        //Sets the energy levels of the atom
+        energyLevels = currentShell;
 
     }
 
@@ -305,4 +268,81 @@ public class Atom extends Nucleus {
         return properties;
 
     }
+
+    //Function only goes up to atomic number 54
+    public int getValanceElectrons() {
+
+        int valanceElectrons = 0;
+
+        //Shell 1
+        if (AtomicNumber == 1) { valanceElectrons = 1; }
+        if (AtomicNumber == 2) { valanceElectrons = 2; }
+
+        //Shell 2
+        if (AtomicNumber == 3) { valanceElectrons = 1; }
+        if (AtomicNumber == 4) { valanceElectrons = 2; }
+        if (AtomicNumber == 5) { valanceElectrons = 3; }
+        if (AtomicNumber == 6) { valanceElectrons = 4; }
+        if (AtomicNumber == 7) { valanceElectrons = 5; }
+        if (AtomicNumber == 8) { valanceElectrons = 6; }
+        if (AtomicNumber == 9) { valanceElectrons = 7; }
+        if (AtomicNumber == 10) { valanceElectrons = 8; }
+
+        //Shell 3
+        if (AtomicNumber == 11) { valanceElectrons = 1; }
+        if (AtomicNumber == 12) { valanceElectrons = 2; }
+        if (AtomicNumber == 13) { valanceElectrons = 3; }
+        if (AtomicNumber == 14) { valanceElectrons = 4; }
+        if (AtomicNumber == 15) { valanceElectrons = 5; }
+        if (AtomicNumber == 16) { valanceElectrons = 6; }
+        if (AtomicNumber == 17) { valanceElectrons = 7; }
+        if (AtomicNumber == 18) { valanceElectrons = 8; }
+
+        //Shell 4
+        if (AtomicNumber == 19) { valanceElectrons = 1; }
+        if (AtomicNumber == 20) { valanceElectrons = 2; }
+        if (AtomicNumber == 21) { valanceElectrons = 2; }
+        if (AtomicNumber == 22) { valanceElectrons = 2; }
+        if (AtomicNumber == 23) { valanceElectrons = 2; }
+        if (AtomicNumber == 24) { valanceElectrons = 1; }
+        if (AtomicNumber == 25) { valanceElectrons = 2; }
+        if (AtomicNumber == 26) { valanceElectrons = 2; }
+        if (AtomicNumber == 27) { valanceElectrons = 2; }
+        if (AtomicNumber == 28) { valanceElectrons = 2; }
+        if (AtomicNumber == 29) { valanceElectrons = 1; }
+        if (AtomicNumber == 30) { valanceElectrons = 2; }
+        if (AtomicNumber == 31) { valanceElectrons = 3; }
+        if (AtomicNumber == 32) { valanceElectrons = 4; }
+        if (AtomicNumber == 33) { valanceElectrons = 5; }
+        if (AtomicNumber == 34) { valanceElectrons = 6; }
+        if (AtomicNumber == 35) { valanceElectrons = 7; }
+        if (AtomicNumber == 36) { valanceElectrons = 8; }
+
+        //Shell 5
+        if (AtomicNumber == 37) { valanceElectrons = 1; }
+        if (AtomicNumber == 38) { valanceElectrons = 2; }
+        if (AtomicNumber == 39) { valanceElectrons = 2; }
+        if (AtomicNumber == 40) { valanceElectrons = 2; }
+        if (AtomicNumber == 41) { valanceElectrons = 1; }
+        if (AtomicNumber == 42) { valanceElectrons = 1; }
+        if (AtomicNumber == 43) { valanceElectrons = 2; }
+        if (AtomicNumber == 44) { valanceElectrons = 1; }
+        if (AtomicNumber == 45) { valanceElectrons = 1; }
+        if (AtomicNumber == 46) { valanceElectrons = 18; }
+        if (AtomicNumber == 47) { valanceElectrons = 1; }
+        if (AtomicNumber == 48) { valanceElectrons = 2; }
+        if (AtomicNumber == 49) { valanceElectrons = 3; }
+        if (AtomicNumber == 50) { valanceElectrons = 4; }
+        if (AtomicNumber == 51) { valanceElectrons = 5; }
+        if (AtomicNumber == 52) { valanceElectrons = 6; }
+        if (AtomicNumber == 53) { valanceElectrons = 7; }
+        if (AtomicNumber == 54) { valanceElectrons = 8; }
+
+
+        return valanceElectrons;
+    }
+
+    public void addElectron(int i) { numberOfElectrons = numberOfElectrons + i; setCharge(); }
+
+    public void takeElectron(int i) { numberOfElectrons = numberOfElectrons - i; setCharge(); }
 }

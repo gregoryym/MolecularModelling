@@ -9,18 +9,23 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.Character;
 
+//Class that holds the properties of the graphical user interface and calls other classes -> The startup class transitions into the environment class
+//When the user builds the molecule
 public class Startup {
 
+    //Variable that holds the boolean value to know when to close the program and stop it running
     private static boolean kill = false;
 
+    //Holds the environment object
     private static Environment environment;
 
+    //Variable that holds the boolean value of the window status
     private static boolean windowOpen = false;
 
+    //Main function that starts up the graphical user interface to interact with the molecule
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         //calls the windows
         startupWindow();
-        //calls the 3D renderer
 
     }
 
@@ -29,7 +34,7 @@ public class Startup {
         //While loop continues to open the first window
         while (!windowOpen) {
             //If statement checks to see if the user wants to terminate the program
-            if (kill == true) { break; }
+            if (kill) { break; }
             //Creates a input box for user to enter a set of commands
             String command = JOptionPane.showInputDialog(null,"Enter a molecular formula or type HELP for more Options");
             if ( command == null ) { command = "exit"; }
@@ -51,7 +56,7 @@ public class Startup {
         //while loop continues to open the molecule window
         while (!windowOpen) {
             //if statement checks to see if the user wants to terminate the program
-            if (kill == true) { break; }
+            if (kill) { break; }
             //creates an input box for the user to enter commands
             String command = JOptionPane.showInputDialog(null, "Type HELP for commands to interact with the molecule.");
             if (command == null) {command = "exit"; }
@@ -81,7 +86,18 @@ public class Startup {
                 windowOpen = true;
 
             }
-            //If the user enters anything else then it will be considered an interaction betnween molecule
+//*********
+//*********
+//*********
+//*********
+            //This is a test command that prints to the command line
+            else if (command.equalsIgnoreCase("shells")) {System.out.println(molecule.atoms.get(0).getValanceElectrons()); }
+//*********s
+//*********
+//*********
+//*********
+
+            //If the user enters anything else then it will be considered an interaction between molecule
             else {
                 //creates a string to hold the atom index
                 String atomIndex = "";

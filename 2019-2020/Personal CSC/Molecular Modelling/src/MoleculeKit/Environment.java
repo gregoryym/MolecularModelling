@@ -5,6 +5,7 @@ import peasy.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 //Class that creates the 3D environment
 public class Environment extends PApplet {
@@ -12,7 +13,6 @@ public class Environment extends PApplet {
     private PeasyCam cam;
     private float angle = 0;
     private boolean rotate = true;
-    private Atom atom;
     Molecule molecule;
     String moleculeStr;
 
@@ -35,7 +35,7 @@ public class Environment extends PApplet {
         BufferedReader reader = createReader("Molecule.txt");
         //variable to hold the text in the file - sets initial to nothing
         String line = null;
-        //Trys to read the file but if there is nothing in the file then will switch to the catch statement
+        //Tries to read the file but if there is nothing in the file then will switch to the catch statement
         try {
             //Runs until line does not read null anymore
             while ((line = reader.readLine()) != null) {
@@ -55,23 +55,10 @@ public class Environment extends PApplet {
         //Function that creates the lighting in the environment
         lights();
         background(0);
-        strokeWeight(5);
-        /*
-        Sets up the x, y, z axis
-        Line 1: X - AXIS (COLOR_BLUE)
-        Line 2: Y - AXIS (COLOR_GREEN)
-        Line 3: Z - AXIS (COLOR_WHITE)
-         */
-        stroke(0, 0, 255);
-        line(-500, 0, 0, 500, 0, 0); // Line 1
-        stroke(0, 255, 0);
-        line(0, -500, 0, 0, 500, 0); // Line 2
-        stroke(255);
-        line(0, 0, -500, 0, 0, 500); // Line 3
-
+        drawAxes();
         noStroke();
 
-        //Creates the atoms for the enviroment
+        //Creates the atoms for the environment
         drawAtom(new Atom(1, 0, 0, 0), new Atom(1, 0, 0, 0));
 
     }
@@ -108,4 +95,21 @@ public class Environment extends PApplet {
         }
     }
 
+    //Draws the axes in the environment
+    public void drawAxes() {
+        strokeWeight(5);
+        /*
+        Sets up the x, y, z axis
+        Line 1: X - AXIS (COLOR_BLUE)
+        Line 2: Y - AXIS (COLOR_GREEN)
+        Line 3: Z - AXIS (COLOR_WHITE)
+         */
+        stroke(0, 0, 255);
+        line(-500, 0, 0, 500, 0, 0); // Line 1
+        stroke(0, 255, 0);
+        line(0, -500, 0, 0, 500, 0); // Line 2
+        stroke(255);
+        line(0, 0, -500, 0, 0, 500); // Line 3
+
+    }
 }

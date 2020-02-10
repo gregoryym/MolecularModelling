@@ -9,20 +9,49 @@ public class Molecule {
 
     ArrayList<Atom> atoms;
     String[] atomNames;
-    HashMap<Atom, List<Atom>> molecule;
+    HashMap<Atom, List<Bond>> molecule;
 
+    //Initialization of the molecule that is created in the environment
     public Molecule(String moleculeString) {
 
+        //Dissects the input string and translates that to atoms
         dissectMolecule(moleculeString);
 
-        molecule = new HashMap<Atom, List<Atom>>();
-        for (Atom atom : atoms) {
-            molecule.put(atom, null);
-        }
+        //The molecule is initialized
+        /*
+                IDEA IN MIND:
+
+                molecule is a hash map which means there is a key (the single atom) and then each key is set
+                to a list which contains more atom objects
+                The idea is that the list contains all the atoms that the key is bonded to
+
+                EXAMPLE: CH4
+
+                carbon is bonded to 4 hydrogen atoms
+                hydrogen 1 is bonded to carbon
+                hydrogen 2 is bonded to carbon
+                hydrogen 3 is bonded to carbon
+                hydrogen 4 is bonded to carbon
+
+                carbon = {hydrogen 1, hydrogen 2, hydrogen 3, hydrogen 4}
+
+                hydrogen 1 = {carbon}
+
+                hydrogen 2 = {carbon}
+
+                hydrogen 3 = {carbon}
+
+                hydrogen 4 = {carbon}
+         */
+
+        molecule = new HashMap<>();
+        //loops through all the atoms in the atom array list and initializes the hashmap
+        for (Atom atom : atoms) { molecule.put(atom, null); }
     }
 
     //This method dissect the input molecule and creates individual atoms
     private void dissectMolecule(String molecule) {
+        System.out.println(molecule.length());
         //Variable that holds the string of the dissected element
         String element = "";
         //Variable that holds the number of moles
@@ -32,7 +61,7 @@ public class Molecule {
         //Holds the length of the molecule
         int index = molecule.length();
         //Holds the list of the molecules
-        atoms = new ArrayList<Atom>();
+        atoms = new ArrayList<>();
 
         //This for loop goes through each character in the string molecule
         for (int i = 0; i < index; i++) {
@@ -63,7 +92,7 @@ public class Molecule {
             }
             //This if statement checks to see if the character at index i is a lowercase letter
             //If the character is a lowercase then it will be concatenated with the previous string forming the final letter of the element
-            else if (Character.isLowerCase(molecule.charAt(i))) {element = element + String.valueOf(molecule.charAt(i)); }
+            else if (Character.isLowerCase(molecule.charAt(i))) {element = element + molecule.charAt(i); }
             //this if statement checks to see if the character is a number and not at index 0. If the number is not at index 0 then it shows how many of that
             //element is present in the formula
             else if (Character.isDigit(molecule.charAt(i)) && i != 0) {
@@ -213,6 +242,12 @@ public class Molecule {
         return atomicNumber;
     }
 
+    //Command that gets the lewis Structure of the molecule
+    public void getLewisStructure() {
+        getCentralAtom();
+        getMoleculeValanceElectrons();
+    }
+
     //This method prints out the atoms in the molecule
     public String[] getAtoms() {
         //this for loop goes through the array list of atoms
@@ -234,12 +269,90 @@ public class Molecule {
         return atomNames;
     }
 
-    public void bond(Atom Atom1, Atom Atom2) {
+    //This function gets the center atom
+    private Atom getCentralAtom() {
 
-        molecule.get(Atom1).add(Atom2);
+        //This if statement checks to see if the molecule is non-polar with only two different types of elements
+        //It also checks to see if there are more than two atoms in the molecule
+        if (getNumberOfElements() == 2 && atoms.size() > 2) {
+
+            //The hashmap is initialized to the hashmap that is returned in the getAmountOfElements function
+            HashMap<String, Integer> amountOfElements = getAmountOfElements();
+
+            //This for loop checks to see if the molecule entered has a single center atom
+            //The atom with the amount of 1 atom for an element will be the center atom
+            //All the other atoms will be surrounding elements
+            for (Atom atom : atoms) {
+                //If the for loop finds the element that only has one atom
+                if (amountOfElements.get(atom.name) == 1) {
+                    //Then the atom will be returned as the center atom
+                    return atom;
+                }
+            }
+        }
+
+        else {
+            return null;
+        }
+        return null;
+    }
+
+    //Function that returns total number of valance electrons in the molecule
+    private int getMoleculeValanceElectrons() {
+
+        //Holds the number of valance electrons
+        int totalValanceElectrons = 0;
+
+        //Loops through the atoms in the atom array and collects all of the valance electrons
+        for (Atom atom : atoms) { totalValanceElectrons = totalValanceElectrons + atom.getValanceElectrons(); }
+
+        //returns the valance electrons
+        return totalValanceElectrons;
 
     }
 
+    //Function that returns the number of different elements in the molecule
+    private int getNumberOfElements() {
 
+        //Arraylist that holds the different elements names, does not repeat names
+        ArrayList<String> elementNames = new ArrayList<>();
+        //initializes the array list
+        elementNames.add(atoms.get(0).name);
 
+        //Loops through all the atoms in the atom array list
+        for (Atom atom : atoms) {
+            //If the atoms name is not already in the element name array list //Then the atom name will be added to the list
+            if (!elementNames.contains(atom.name)) { elementNames.add(atom.name); }
+        }
+
+        //function returns the number of different atoms in the molecule
+        return elementNames.size();
+    }
+
+    //Function that returns the amount of each element in the molecule
+    //Hashmap that the function returns is in the form of:
+        //<String> -> Name of the atom
+        //<Integer> -> Number of how many atoms of a certain element are in the molecule
+    private HashMap<String, Integer> getAmountOfElements() {
+
+        //Arraylist that holds the different elements names, does not repeat names
+        ArrayList<String> elementNames = new ArrayList<>();
+
+        //Hashmap to return at the end of the function
+        HashMap<String, Integer> amountOfElements = new HashMap<>();
+
+        //Initialization of the hashMap - you can only have one key of the same String
+        for (Atom atom : atoms) { amountOfElements.put(atom.name, 1); }
+
+        //Loops through all the atoms in the atom array list
+        for (Atom atom : atoms) {
+            //If that atom's name is already in the array list then the value in the hash map adds one to the key with that atom's name
+            if (elementNames.contains(atom.name)) { amountOfElements.put(atom.name, amountOfElements.get(atom.name) + 1); }
+            //If the atom's name is not in the array list then the atom's name is placed in the element name array list
+            else { elementNames.add(atom.name); }
+        }
+
+        //Returns a hash map of the elements name and how many atoms there are of that specific element
+        return amountOfElements;
+    }
 }
